@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vibesense"
+version = "1.0.0"
+description = "Bearing fault diagnosis + health index from vibration (CWRU): features+GBM vs 1D-CNN, leakage-free evaluation, FastAPI, in-browser ONNX demo."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Rakesh Burla", email = "burlarakesh1458@gmail.com" }]
+requires-python = ">=3.11"
+dependencies = ["numpy", "scipy", "scikit-learn==1.6.1", "joblib", "onnxruntime", "fastapi", "uvicorn", "pydantic>=2", "python-multipart"]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "httpx"]
+train = ["torch", "onnx", "matplotlib"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 130
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]

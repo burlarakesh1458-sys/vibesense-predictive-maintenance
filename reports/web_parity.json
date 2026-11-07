@@ -1,0 +1,8 @@
+{
+ "runtime": "onnxruntime-web 1.22.0 (wasm, 1 thread) in node v22.23.3",
+ "n_samples": 20,
+ "max_abs_prob_diff_vs_pytorch": 0.0000074694190661250826,
+ "label_agreement_vs_pytorch": 1,
+ "correct_vs_ground_truth": 1,
+ "median_ms_per_window": 5.565252999999757
+}

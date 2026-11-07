@@ -1,0 +1,39 @@
+{
+ "note": "one 2048-sample window, 1 thread (OMP/MKL/ORT pinned), shared 2-vCPU sandbox with other jobs running",
+ "cnn_onnxruntime": {
+  "median_ms": 0.122,
+  "p95_ms": 0.289,
+  "n": 500
+ },
+ "feature_extraction": {
+  "median_ms": 1.004,
+  "p95_ms": 3.67,
+  "n": 500
+ },
+ "gbm_predict_given_features": {
+  "median_ms": 54.312,
+  "p95_ms": 157.983,
+  "n": 500
+ },
+ "gbm_end_to_end": {
+  "median_ms": 32.883,
+  "p95_ms": 102.616,
+  "n": 500
+ },
+ "health_index_end_to_end": {
+  "median_ms": 1.215,
+  "p95_ms": 9.639,
+  "n": 500
+ },
+ "full_predict_call_cnn": {
+  "median_ms": 2.153,
+  "p95_ms": 9.139,
+  "n": 500
+ },
+ "loadavg_1min_before_after": [
+  9.52,
+  8.19
+ ],
+ "cpu_count": 2,
+ "python": "3.12.15"
+}

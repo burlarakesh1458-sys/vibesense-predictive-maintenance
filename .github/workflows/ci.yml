@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: lint + tests (offline, committed models, no secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check src tests scripts
+      - run: pytest -q
+        env: { PYTHONPATH: src }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: static demo - headless smoke test + browser-path ONNX parity
+        run: |
+          npm i --silent --no-save --prefix .cache/ortweb onnxruntime-web@1.22.0 jsdom@25
+          NODE_PATH=.cache/ortweb/node_modules node scripts/demo_smoke.cjs
+          NODE_PATH=.cache/ortweb/node_modules node scripts/web_parity.cjs
+
+  docker:
+    name: docker build + smoke test
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t vibesense:ci .
+      - run: |
+          docker run -d --name vs -p 8000:8000 vibesense:ci
+          for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 1; done
+          python3 - <<'PY'
+          import json, urllib.request
+          xs = [float(l) for l in open("tests/fixtures/OR007_load3_0.csv").read().split()[1:]]
+          req = urllib.request.Request("http://localhost:8000/predict", data=json.dumps({"samples": xs}).encode(),
+                                       headers={"content-type": "application/json"})
+          out = json.load(urllib.request.urlopen(req)); print(out["label"], out["confidence"])
+          assert out["fault_type"] == "OuterRace", out
+          PY

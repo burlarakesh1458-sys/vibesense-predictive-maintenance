@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VibeSense — bearing fault diagnosis in your browser</title>
+<meta name="description" content="Bearing fault diagnosis from vibration (CWRU): 1D-CNN running in-browser with onnxruntime-web, leakage-free evaluation, health index.">
+<link rel="stylesheet" href="demo/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="dot"></span>VibeSense</div>
+  <nav>
+    <a href="#demo">Live demo</a>
+    <a href="#results">Results</a>
+    <a href="#method">Method</a>
+    <a class="gh" href="https://github.com/burlarakesh1458-sys/vibesense-predictive-maintenance" target="_blank" rel="noopener">GitHub ↗</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <h1>Bearing fault diagnosis from raw vibration</h1>
+  <p class="lead">A 1D-CNN and a feature-based gradient-boosting model trained on the Case Western Reserve University bearing data, evaluated
+    <b>without window leakage</b> (train on motor loads 0–2 hp, test on the unseen 3 hp recordings). The CNN below runs entirely in your browser via
+    onnxruntime-web — no server.</p>
+  <div class="kpis" id="kpis"><div class="kpi skeleton"></div><div class="kpi skeleton"></div><div class="kpi skeleton"></div><div class="kpi skeleton"></div></div>
+</section>
+
+<section id="demo" class="card">
+  <h2>Live demo</h2>
+  <div class="controls">
+    <label>Sample signal (held-out, 3 hp load)
+      <select id="sampleSel"></select>
+    </label>
+    <span class="or">or</span>
+    <label class="upload">Upload CSV (one column of acceleration, ≥ 2048 rows)
+      <input type="file" id="csvIn" accept=".csv,.txt,.tsv">
+    </label>
+    <label>Sample rate (Hz)
+      <input type="number" id="fsIn" value="12000" min="1000" step="1">
+    </label>
+    <button id="runBtn" disabled>Loading model…</button>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="plot"><div class="ptitle">Waveform (2048 samples)</div><canvas id="cWave" width="640" height="150"></canvas></div>
+      <div class="plot"><div class="ptitle">FFT amplitude spectrum (log), 0–6 kHz</div><canvas id="cFft" width="640" height="170"></canvas></div>
+      <div class="plot"><div class="ptitle">Envelope spectrum, 0–500 Hz (2–5.5 kHz band) · defect-frequency markers at 1772 rpm</div><canvas id="cEnv" width="640" height="170"></canvas>
+        <div class="legend"><span class="l-bpfo">BPFO</span><span class="l-bpfi">BPFI</span><span class="l-bsf">BSF</span></div></div>
+    </div>
+    <div class="result" id="result">
+      <div class="muted">Pick a sample or upload a CSV, then run.</div>
+    </div>
+  </div>
+</section>
+
+<section id="results" class="card">
+  <h2>Measured results</h2>
+  <p class="muted">Every number is read from <code>reports/</code> in the repo, produced by <code>make evaluate</code> / <code>make deploy</code>. The "random" column is the
+    common but leaky protocol (overlapping windows of the same recording on both sides); the other columns never share a recording between train and test.</p>
+  <div class="tabs" id="taskTabs"></div>
+  <div class="tablewrap"><table id="resTable"></table></div>
+  <div class="grid2">
+    <div>
+      <h3>Confusion matrix</h3>
+      <div class="controls small">
+        <select id="cmSel"></select>
+      </div>
+      <canvas id="cCm" width="520" height="520"></canvas>
+    </div>
+    <div>
+      <h3>Health index (unsupervised)</h3>
+      <div id="hiBox"></div>
+      <h3>Latency per window</h3>
+      <div id="latBox"></div>
+    </div>
+  </div>
+</section>
+
+<section id="method" class="card">
+  <h2>Method</h2>
+  <ol class="method">
+    <li><b>Data:</b> 40 CWRU recordings, 12 kHz drive-end accelerometer — normal + inner race / ball / outer race (centred) faults at 0.007, 0.014, 0.021 in, each at 0/1/2/3 hp. First 121k samples per recording, 2048-sample windows, 50 % overlap.</li>
+    <li><b>Features (GBM / RF):</b> 12 time-domain stats (RMS, kurtosis, crest factor, …), 16 FFT band energies + spectral shape, envelope-spectrum band energies and peak amplitudes at BPFI/BPFO/BSF/FTF harmonics (Hilbert envelope of the 2–5.5 kHz resonance band).</li>
+    <li><b>1D-CNN:</b> 4 conv blocks with a wide 64-tap first kernel, global average pooling; per-window z-score input; trained 15 epochs on CPU, exported to ONNX.</li>
+    <li><b>Evaluation:</b> random window split (leaky, for reference), leave-one-load-out (4 folds), and a cross-fault-size test (train 7 & 21 mil, test 14 mil).</li>
+    <li><b>Health index:</b> Mahalanobis distance of the feature vector from healthy-only training data; alarm at the 99th percentile of healthy windows.</li>
+  </ol>
+  <p class="muted">Serving: FastAPI <code>/predict</code> (JSON window) and <code>/predict/csv</code>, <code>/health</code>; this page doubles as the dashboard.</p>
+</section>
+</main>
+
+<footer>
+  Built by Rakesh Burla · <a href="https://github.com/burlarakesh1458-sys/vibesense-predictive-maintenance">source</a> · Data: CWRU Bearing Data Center · MIT licence
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js"></script>
+<script src="demo/dsp.js"></script>
+<script src="demo/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+ "n": 1170,
+ "accuracy": 0.9948717948717949,
+ "macro_f1": 0.9922642439614325,
+ "per_class_recall": {
+  "Normal": 1.0,
+  "InnerRace": 1.0,
+  "Ball": 0.9857549857549858,
+  "OuterRace": 0.9971509971509972
+ },
+ "confusion_matrix": [
+  [
+   117,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   351,
+   0,
+   0
+  ],
+  [
+   5,
+   0,
+   346,
+   0
+  ],
+  [
+   0,
+   0,
+   1,
+   350
+  ]
+ ],
+ "classes": [
+  "Normal",
+  "InnerRace",
+  "Ball",
+  "OuterRace"
+ ],
+ "task": "4class",
+ "split": "load3",
+ "model": "gbm",
+ "seed": 0,
+ "n_train": 3510,
+ "fit_seconds": 8.3,
+ "train_recordings": 30,
+ "test_recordings": 10
+}

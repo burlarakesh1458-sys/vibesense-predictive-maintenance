@@ -1,0 +1,51 @@
+{
+ "n": 1404,
+ "accuracy": 1.0,
+ "macro_f1": 1.0,
+ "per_class_recall": {
+  "Normal": 1.0,
+  "InnerRace": 1.0,
+  "Ball": 1.0,
+  "OuterRace": 1.0
+ },
+ "confusion_matrix": [
+  [
+   141,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   421,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   421,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   421
+  ]
+ ],
+ "classes": [
+  "Normal",
+  "InnerRace",
+  "Ball",
+  "OuterRace"
+ ],
+ "task": "4class",
+ "split": "random",
+ "model": "rf",
+ "seed": 0,
+ "n_train": 3276,
+ "fit_seconds": 8.9,
+ "train_recordings": 40,
+ "test_recordings": 40
+}

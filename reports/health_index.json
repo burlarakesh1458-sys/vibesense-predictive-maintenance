@@ -1,0 +1,70 @@
+{
+ "fit_on": "normal windows, loads 0-2 hp only (no fault labels used)",
+ "served_threshold_rule": "cross_load_p99",
+ "auroc_normal_vs_fault_load3": 1.0,
+ "thresholds": {
+  "in_sample_p99": {
+   "threshold": 8.481729507446289,
+   "false_alarm_rate_normal_load3": 0.6239316239316239,
+   "detection_rate_faults_load3": 1.0
+  },
+  "cross_load_p99": {
+   "threshold": 25.211978912353516,
+   "false_alarm_rate_normal_load3": 0.0,
+   "detection_rate_faults_load3": 1.0
+  }
+ },
+ "mean_hi_by_fault_size_mils_load3": {
+  "0": 8.81339168548584,
+  "7": 313.80389404296875,
+  "14": 196.2950897216797,
+  "21": 436.6484069824219
+ },
+ "min_hi_faults_load3": 83.02462768554688,
+ "max_hi_normal_load3": 12.506237030029297,
+ "by_class_load3": {
+  "Normal": {
+   "mean_hi": 8.81339168548584,
+   "alarm_rate": 0.0
+  },
+  "IR007": {
+   "mean_hi": 265.2418518066406,
+   "alarm_rate": 1.0
+  },
+  "IR014": {
+   "mean_hi": 281.97503662109375,
+   "alarm_rate": 1.0
+  },
+  "IR021": {
+   "mean_hi": 434.8849182128906,
+   "alarm_rate": 1.0
+  },
+  "B007": {
+   "mean_hi": 165.843994140625,
+   "alarm_rate": 1.0
+  },
+  "B014": {
+   "mean_hi": 163.37925720214844,
+   "alarm_rate": 1.0
+  },
+  "B021": {
+   "mean_hi": 130.8755340576172,
+   "alarm_rate": 1.0
+  },
+  "OR007": {
+   "mean_hi": 510.3258361816406,
+   "alarm_rate": 1.0
+  },
+  "OR014": {
+   "mean_hi": 143.53097534179688,
+   "alarm_rate": 1.0
+  },
+  "OR021": {
+   "mean_hi": 744.1846923828125,
+   "alarm_rate": 1.0
+  }
+ },
+ "threshold_served": 25.211978912353516,
+ "false_alarm_rate_normal_load3": 0.0,
+ "detection_rate_faults_load3": 1.0
+}
